@@ -1,5 +1,5 @@
 {
-    "name": "lowlvlattackdetector",
+    "name": "kvassh.lowlvl.attack.detector",
     "version": "1.0.0",
     "description": "Detects when a low lvl joins an ongoing attack",
     "main": "main.js",

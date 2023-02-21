@@ -30,7 +30,7 @@ module.exports = {
             raw: true,
             banner: stripIndent`
                 // ==UserScript==
-                // @name        LowLvlAttackDetector
+                // @name        kvassh.lowlvl.attack.detector
                 // @description Detects when a low lvl joins an ongoing attack
                 // @version     1.0.0
                 // @namespace   kvassh.lowlvl.attack.detector
