@@ -7,7 +7,7 @@
         "sourceMap": true
     },
     "files": [
-        "kvassh.ts",
-        "main.ts",
+        "../kvassh.ts",
+        "main.ts"
     ]
 }

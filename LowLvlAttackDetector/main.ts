@@ -1,4 +1,4 @@
-import { Kvassh, log } from './kvassh'
+import { Kvassh, log } from '../kvassh'
 
 const kvassh = Kvassh;
 kvassh.setPrefix('lowlvl.attack.detector'); // cache data will be stored as kvassh.lowlvl.attack.detector.item1 etc in localStorage

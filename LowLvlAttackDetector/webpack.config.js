@@ -22,7 +22,7 @@ module.exports = {
         extensions: [".ts", ".js"]
     },
     output: {
-        path: path.resolve(__dirname, "dist"),
+        path: path.resolve(__dirname, "../"),
         filename: "LowLvlAttackDetector.user.js"
     },
     plugins: [
