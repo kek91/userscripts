@@ -14,6 +14,33 @@
 /******/ 	"use strict";
 /******/ 	var __webpack_modules__ = ({
 
+/***/ "./settings.ts":
+/*!*********************!*\
+  !*** ./settings.ts ***!
+  \*********************/
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+
+exports.__esModule = true;
+exports.Settings = void 0;
+var kvassh_1 = __webpack_require__(/*! ../kvassh */ "../kvassh.ts");
+var kvassh = kvassh_1.Kvassh;
+function Settings() {
+    if (location.href.includes('preferences.php')) {
+        (0, kvassh_1.log)('i', 'Settings mode!');
+        try {
+            var contentDiv = document.getElementsByClassName('content-wrapper')[0];
+        }
+        catch (e) {
+            (0, kvassh_1.log)('e', 'Error details: ' + e);
+        }
+    }
+}
+exports.Settings = Settings;
+
+
+/***/ }),
+
 /***/ "../kvassh.ts":
 /*!********************!*\
   !*** ../kvassh.ts ***!
@@ -106,9 +133,11 @@ var exports = __webpack_exports__;
 
 exports.__esModule = true;
 var kvassh_1 = __webpack_require__(/*! ../kvassh */ "../kvassh.ts");
+var settings_1 = __webpack_require__(/*! ./settings */ "./settings.ts");
 var kvassh = kvassh_1.Kvassh;
 kvassh.setPrefix('fancynavigation');
 (0, kvassh_1.log)('i', kvassh.getPrefix() + ' has been initialized!');
+(0, settings_1.Settings)();
 function generateNavMarkup(id, link, icon) {
     return '<a href="/' + link + '" class="linkWrap___faB9d events___CBjuV" id="' + id + '">\n' +
         '        <svg xmlns="http://www.w3.org/2000/svg" class="default___XXAGt " filter="url(#sidebar__accountLinks_filter)"\n' +

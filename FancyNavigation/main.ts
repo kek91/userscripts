@@ -1,8 +1,11 @@
 import {Kvassh, log} from '../kvassh'
+import { Settings } from './settings'
 
 const kvassh = Kvassh;
 kvassh.setPrefix('fancynavigation');
 log('i', kvassh.getPrefix() + ' has been initialized!');
+
+Settings();
 
 function generateNavMarkup(id: string, link: string, icon: string) {
     return '<a href="/' + link + '" class="linkWrap___faB9d events___CBjuV" id="' + id + '">\n' +

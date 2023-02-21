@@ -8,6 +8,7 @@
     },
     "files": [
         "../kvassh.ts",
-        "main.ts"
+        "main.ts",
+        "settings.ts"
     ]
 }
