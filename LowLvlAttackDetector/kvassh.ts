@@ -9,7 +9,7 @@ export class Kvassh {
         return this.prefix;
     }
 
-    public static setPrefix(data) {
+    public static setPrefix(data: string) {
         this.prefix = 'kvassh.' + data + '.';
     }
 
@@ -32,7 +32,7 @@ export class Kvassh {
     };
 }
 
-export function log(lvl, msg) {
+export function log(lvl: string, msg: string) {
     switch (lvl) {
         case 'e':
             console.error(msg);

@@ -23,16 +23,16 @@ module.exports = {
     },
     output: {
         path: path.resolve(__dirname, "dist"),
-        filename: "lib.user.js"
+        filename: "LowLvlAttackDetector.js"
     },
     plugins: [
         new webpack.BannerPlugin({
             raw: true,
             banner: stripIndent`
                 // ==UserScript==
-                // @name        kvassh.lowlvl.attack.detector
+                // @name        LowLvlAttackDetector
                 // @description Detects when a low lvl joins an ongoing attack
-                // @version     1.0.0
+                // @version     0.1
                 // @namespace   kvassh.lowlvl.attack.detector
                 // @match       https://www.torn.com/loader.php*
                 // @match       https://www.torn.com/loader2.php*
