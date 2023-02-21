@@ -1,0 +1,33 @@
+{
+    "name": "fancynavigation",
+    "version": "0.1",
+    "main": "main.ts",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "build": "webpack"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/kek91/TornScripts.git"
+    },
+    "keywords": [
+        "torn",
+        "script"
+    ],
+    "author": "Kim Eirik Kvassheim",
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/kek91/TornScripts/issues"
+    },
+    "homepage": "https://github.com/kek91/TornScripts#readme",
+    "devDependencies": {
+        "common-tags": "^1.8.0",
+        "ts-loader": "^9.4.2",
+        "typescript": "^4.9.5",
+        "webpack": "^5.75.0",
+        "webpack-cli": "^5.0.1"
+    },
+    "dependencies": {
+        "tsc": "^2.0.4"
+    }
+}
