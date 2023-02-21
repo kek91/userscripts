@@ -43,6 +43,9 @@ module.exports = {
                 // @grant       GM_info
                 // @connect     api.torn.com
                 // @author      Kvassh
+                // @icon        https://www.google.com/s2/favicons?sz=64&domain=torn.com
+                // @updateURL   https://github.com/kek91/TornScripts/LowLvlAttackDetector.user.js
+                // @downloadURL https://github.com/kek91/TornScripts/LowLvlAttackDetector.user.js
                 // ==/UserScript==`
         })
     ]
