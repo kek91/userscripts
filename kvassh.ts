@@ -3,31 +3,28 @@
  */
 export class Kvassh {
 
-    private static prefix: string = 'kvassh.';
+    private static prefix: string = 'kvassh';
 
     public static getPrefix() {
         return this.prefix;
     }
 
     public static setPrefix(data: string) {
-        this.prefix = 'kvassh.' + data + '.';
+        this.prefix = 'kvassh.' + data;
     }
 
     public static set(key: string, val: string) {
-        localStorage.setItem(this.prefix + key, val);
+        localStorage.setItem(this.prefix + '.' + key, val);
     };
 
     public static get(key: string) {
-        return localStorage.getItem(this.prefix + key);
+        return localStorage.getItem(this.prefix + '.' + key);
     };
 
     public static clear() {
         const confirmation = confirm('Are you sure you wish to clear all data?');
         if (confirmation) {
-            this.set(this.prefix + 'aaa', null);
-            this.set(this.prefix + 'bbb', null);
-            this.set(this.prefix + 'ccc', null);
-            this.set(this.prefix + 'ddd', null);
+            this.set(this.prefix + 'data', null);
         }
     };
 }
@@ -35,13 +32,13 @@ export class Kvassh {
 export function log(lvl: string, msg: string) {
     switch (lvl) {
         case 'e':
-            console.error(msg);
+            console.error('[' + Kvassh.getPrefix() + '] ' + msg);
             break;
         case 'w':
-            console.warn(msg);
+            console.warn('[' + Kvassh.getPrefix() + '] ' + msg);
             break;
         default:
-            console.log(msg);
+            console.log('[' + Kvassh.getPrefix() + '] ' + msg);
             break;
     }
 }
