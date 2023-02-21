@@ -1,0 +1,31 @@
+{
+    "name": "lowlvlattackdetector",
+    "version": "1.0.0",
+    "description": "Detects when a low lvl joins an ongoing attack",
+    "main": "main.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "build": "webpack"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/kek91/TornScripts.git"
+    },
+    "keywords": [
+        "torn",
+        "script"
+    ],
+    "author": "Kim Eirik Kvassheim",
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/kek91/TornScripts/issues"
+    },
+    "homepage": "https://github.com/kek91/TornScripts#readme",
+    "devDependencies": {
+        "common-tags": "^1.8.0",
+        "ts-loader": "^5.3.3",
+        "typescript": "^3.3.1",
+        "webpack": "^4.29.3",
+        "webpack-cli": "^3.2.3"
+    }
+}
