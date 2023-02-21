@@ -7,7 +7,7 @@ const stripIndent = require("common-tags").stripIndent;
 
 module.exports = {
     entry: "./main.ts",
-    devtool: 'inline-source-map',
+    devtool: "hidden-source-map",
     mode: "development",
     module: {
         rules: [
