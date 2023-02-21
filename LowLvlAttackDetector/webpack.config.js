@@ -23,7 +23,7 @@ module.exports = {
     },
     output: {
         path: path.resolve(__dirname, "dist"),
-        filename: "LowLvlAttackDetector.js"
+        filename: "LowLvlAttackDetector.user.js"
     },
     plugins: [
         new webpack.BannerPlugin({
