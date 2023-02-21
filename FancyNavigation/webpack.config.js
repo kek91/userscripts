@@ -32,7 +32,7 @@ module.exports = {
                 // ==UserScript==
                 // @name        FancyNavigation
                 // @description Modifies the main navigation bar
-                // @version     0.1
+                // @version     0.2
                 // @namespace   kvassh.fancynavigation
                 // @match       https://www.torn.com/*
                 // @run-at      document-end

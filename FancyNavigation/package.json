@@ -1,6 +1,6 @@
 {
     "name": "fancynavigation",
-    "version": "0.1",
+    "version": "0.2",
     "main": "main.ts",
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1",
