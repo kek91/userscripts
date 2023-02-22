@@ -3,11 +3,21 @@ import {Kvassh, log} from '../kvassh'
 const kvassh = Kvassh;
 
 export function Settings() {
-    if (location.href.includes('preferences.php')) {
-        log('i', 'Settings mode!');
+    if (location.href.includes('preferences.php#tab=navigation-settings')) {
+        log('i', 'Entering Settings mode!');
 
-        try {
-            let contentDiv = document.getElementsByClassName('content-wrapper')[0];
+        // document.querySelectorAll('[role="button"]').forEach( el => {
+        document.querySelectorAll('.sidebarLink___RHFqU').forEach(el => {
+            el.innerHTML += '<a href="#" style="color:darkorange;z-index:999;font-size:24px;width:10px;height:100%;display:block;border:1px solid darkorange;" onclick="alert(\'test\')">+</a>';
+        });
+        //
+        //     function (el){
+        //     el.classList.remove("active");
+        // });
+
+
+        // try {
+        //     let contentDiv = document.getElementsByClassName('content-wrapper')[0];
 
 // contentDiv.innerHTML += `
 // <div id="fancynavigation-settings-container" class="rounding mt10 title-black">
@@ -53,9 +63,12 @@ export function Settings() {
                 </div>
                 `;
              */
-        } catch (e) {
-            log('e', 'Error details: ' + e);
-        }
+
+
+
+        // } catch (e) {
+        //     log('e', 'Error details: ' + e);
+        // }
 
 
 
