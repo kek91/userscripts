@@ -4,9 +4,9 @@
 // @version      0.1
 // @namespace    kvassh.zedhelper
 // @icon         data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAIAAAD8GO2jAAAEZklEQVR4nLzW+1OUVRgH8EU2hQUDBTQFlwW5I+iwctFA1yUICQQyvERgiyOiNjYgTkQTbjIYSBRgJihGjgbKSkSkkCiIlCwMAZJRmCsSko4jt8CF5FLfb/+DLz98zszLu7vnec5znnPEJhOWIpGo+UYAtGoagNPKx9DM/yL0Oq+HJV35MM0IiMIWvQeP3jKAVWfq4bIEPzjnMs24+BS6bq+B1cpWPhc95z8DneYZBs/ccuju+wMc9rsGeytWw0y1M+zWMcrfNJtgvOQ4/M49DYobU2Ds4DRM9jOGC6//CW2+8YUPzscLEYE4YqAZw7njzPKazkl4t/xbWFD0NezMyIK1xamM5nolvCYP4TsPlsJB1RM4kfMyHNjJT+W2cy2jnBUwJ3qpIBFkDw9jSJzLrO05YQv96k5BreYcDLditfjdaoH1ZZ4wpORHuCSUuVZZbocSMdcp3ygC6j+ugFd143DryGeCRCC7+hpnIc+EG+fcgyUNm2FL3gn4tyWzH6yTwnu1TnA01h5GGnElAk8/hKvyN8IXwzzgwxv8707tPOhhOiFIBMaHPsWwJYL5dclj7XdFh/FJXhXsKZNDK2k1fLvvMuxo2QvTHWo5dzsFlO2og6rCGX7WnXXlGrUWVqXYCxLBwbJGDOaOrA3JGH+zZ/Z7+MyeezVEwvhWqx1gZjTXqee0IXyy/BKclh2Et1UyqL+0CM5XeMF3zFXQq7ZYkAjy5G9gKNithf9M8VGA1BVKh1nLvW7/zzeEPcox2AbGlVrDxRdYPzaPXoKtH7TDAVtzmBDD2jd2pOrJfEEi6F7MOX5UwzVYYRLKGd2UQHMds5wk4R4+6bEAJhv0wv6MfdC/uogRyxXwX/+3YGpnHOw4wkxEWbPj6nLiBIlgooO/duzRH1Dmkw6X636C8xq4hysnz8DQKxug8/hRvmN2n88tVkKb/dzPFUnsP7WSQnjAm3G7GL4CFyR9IkQEBjGGhzAoSlnjv+5ZCMeXvAA3bXOE0jjuEmksT9qgdO6M8fBEeHaVDC7TB0Pfp/yGDZVcp5G2L2FWF0/Jv7wrhIhAvPcue3p4lDcMtGXlrnv3TbjfIZmz8D0M3T5njft8xZl+6M8u9NjiVdhnOgbLNP3QNIuxZivZg0cv8B0X3zZBIpBZ52GYthuEhdEHYK4ne6E8whQmGPN529DvsCtmFI64sfvPN9LAO5G8QWnq1PCX9awo07W8HfXe543IVvq+EBEYqBpmMaRpueuSfo6EJ2uYcbNuVkW98jacdS6A6+fehCnx7EU7tLwDbvFhL5pq5E0iKJd59zrFNWtpd4fZrW5CRCAW2zLvgSrOtymVPTKgbwju22wHM4t4xk1plbBfydvfF+m87YyJ+KbdYQvYupVVtGIXu/+M/g50Kt4Nt8l7BIlgnZo3u8Bw9nSnUmYwUc2eY3yWdyR3hQtnZ8J6dzzCXF8J4j1u1xqeFplNPL+Gmnl36iopg+Uz7MfHVjLW14cEOZP/CwAA//8SBG+b+O/5hQAAAABJRU5ErkJggg==
-// @updateURL    https://raw.githubusercontent.com/kek91/TornScripts/refs/heads/main/ZedCity/ZedHelper.js
-// @downloadURL  https://raw.githubusercontent.com/kek91/TornScripts/refs/heads/main/ZedCity/ZedHelper.js
-// @homepage     https://github.com/kek91/TornScripts/blob/main/ZedCity
+// @updateURL    https://raw.githubusercontent.com/kek91/userscripts/refs/heads/main/ZedCity/ZedHelper.js
+// @downloadURL  https://raw.githubusercontent.com/kek91/userscripts/refs/heads/main/ZedCity/ZedHelper.js
+// @homepage     https://github.com/kek91/userscripts/blob/main/ZedCity
 // @author       Kvassh
 // @match        https://www.zed.city/*
 // @run-at       document-end
@@ -23,11 +23,12 @@
  * Features:
  * - Displays market value for items in inventory
  * - Calculates your inventory networth based on current market values
- * - Slightly adjust font size on the timer bars on top
- * - WIP: Add a second nav menu with some useful shortcuts
+ * - Extra nav menu with some useful shortcuts
  *
  * If you have any questions, feel free to reach out to Kvassh [12853] in Zed City
  * 
+ * Changelog:
+ * - v0.1: Initial release
 */
 
 (function() {
@@ -54,12 +55,6 @@
             color: #ccc;
             font-size: 1.6rem;
         }
-            /* Override some Zed City css */
-            .stat, .stat-text {
-                font-size:14px;
-                font-weight:normal;
-            }
-
     `);
 
     const baseApiUrl = 'https://api.zed.city';
@@ -459,7 +454,22 @@
 
         for (let item of items) {
 
-            let codename = getCodename(item.querySelector('.q-item__label').innerText);
+            const codename = getCodename(item.querySelector('.q-item__label').innerText);
+            let qty = 1;
+            try {
+                qty = item.querySelector('.item-qty').innerText;
+                if (qty.includes("%")) {
+                    qty = 1;
+                } else {
+                    qty = parseInt(qty.replace(/[^0-9]/g, ''));
+                }
+            } catch (error) {
+                // eat exception
+            }
+            if (Number.isNaN(qty)) {
+                qty = 1;
+            }
+            log(`Adding market value for ${codename} x ${qty}`);
             
             let data = null;
             if(get(`mv_${codename}`)) {
@@ -471,7 +481,10 @@
             
             if (data !== null) {
                 const datetime = new Date(data.tz).toISOString();
-                priceElement.innerHTML = `<span title="${datetime}"><b class="green">$</b> ${data.marketValue}</span>`;
+                priceElement.innerHTML = `<span title="${datetime}">
+<b class="green">$</b> ${formatNumber(data.marketValue * qty)} 
+<small>(<b class="green">$</b> ${formatNumber(data.marketValue)})</small>
+</span>`;
             } else {
                 priceElement.innerHTML = `<span class="gray">N/A</span>`;
             }
