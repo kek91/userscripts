@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         ZedHelper
 // @description  Misc helper tools for Zed City
-// @version      0.2.1
+// @version      0.4.0
 // @namespace    kvassh.zedhelper
 // @icon         data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAIAAAD8GO2jAAAEZklEQVR4nLzW+1OUVRgH8EU2hQUDBTQFlwW5I+iwctFA1yUICQQyvERgiyOiNjYgTkQTbjIYSBRgJihGjgbKSkSkkCiIlCwMAZJRmCsSko4jt8CF5FLfb/+DLz98zszLu7vnec5znnPEJhOWIpGo+UYAtGoagNPKx9DM/yL0Oq+HJV35MM0IiMIWvQeP3jKAVWfq4bIEPzjnMs24+BS6bq+B1cpWPhc95z8DneYZBs/ccuju+wMc9rsGeytWw0y1M+zWMcrfNJtgvOQ4/M49DYobU2Ds4DRM9jOGC6//CW2+8YUPzscLEYE4YqAZw7njzPKazkl4t/xbWFD0NezMyIK1xamM5nolvCYP4TsPlsJB1RM4kfMyHNjJT+W2cy2jnBUwJ3qpIBFkDw9jSJzLrO05YQv96k5BreYcDLditfjdaoH1ZZ4wpORHuCSUuVZZbocSMdcp3ygC6j+ugFd143DryGeCRCC7+hpnIc+EG+fcgyUNm2FL3gn4tyWzH6yTwnu1TnA01h5GGnElAk8/hKvyN8IXwzzgwxv8707tPOhhOiFIBMaHPsWwJYL5dclj7XdFh/FJXhXsKZNDK2k1fLvvMuxo2QvTHWo5dzsFlO2og6rCGX7WnXXlGrUWVqXYCxLBwbJGDOaOrA3JGH+zZ/Z7+MyeezVEwvhWqx1gZjTXqee0IXyy/BKclh2Et1UyqL+0CM5XeMF3zFXQq7ZYkAjy5G9gKNithf9M8VGA1BVKh1nLvW7/zzeEPcox2AbGlVrDxRdYPzaPXoKtH7TDAVtzmBDD2jd2pOrJfEEi6F7MOX5UwzVYYRLKGd2UQHMds5wk4R4+6bEAJhv0wv6MfdC/uogRyxXwX/+3YGpnHOw4wkxEWbPj6nLiBIlgooO/duzRH1Dmkw6X636C8xq4hysnz8DQKxug8/hRvmN2n88tVkKb/dzPFUnsP7WSQnjAm3G7GL4CFyR9IkQEBjGGhzAoSlnjv+5ZCMeXvAA3bXOE0jjuEmksT9qgdO6M8fBEeHaVDC7TB0Pfp/yGDZVcp5G2L2FWF0/Jv7wrhIhAvPcue3p4lDcMtGXlrnv3TbjfIZmz8D0M3T5njft8xZl+6M8u9NjiVdhnOgbLNP3QNIuxZivZg0cv8B0X3zZBIpBZ52GYthuEhdEHYK4ne6E8whQmGPN529DvsCtmFI64sfvPN9LAO5G8QWnq1PCX9awo07W8HfXe543IVvq+EBEYqBpmMaRpueuSfo6EJ2uYcbNuVkW98jacdS6A6+fehCnx7EU7tLwDbvFhL5pq5E0iKJd59zrFNWtpd4fZrW5CRCAW2zLvgSrOtymVPTKgbwju22wHM4t4xk1plbBfydvfF+m87YyJ+KbdYQvYupVVtGIXu/+M/g50Kt4Nt8l7BIlgnZo3u8Bw9nSnUmYwUc2eY3yWdyR3hQtnZ8J6dzzCXF8J4j1u1xqeFplNPL+Gmnl36iopg+Uz7MfHVjLW14cEOZP/CwAA//8SBG+b+O/5hQAAAABJRU5ErkJggg==
 // @updateURL    https://raw.githubusercontent.com/kek91/userscripts/refs/heads/main/ZedCity/ZedHelper.js
@@ -25,10 +25,14 @@
  * - Calculates your inventory networth based on current market values
  * - Extra nav menu with some useful shortcuts
  * - Autopopulates gym train input fields to use maximum energy
+ * - Autopopulates input field for junk shop with 360 item buy qty
+ * - Show value of trades at Radio Tower
  *
  * If you have any questions, feel free to reach out to Kvassh [12853] in Zed City
  * 
  * Changelog:
+ * - v0.4: Add value of trades at Radio Tower
+ * - v0.3: Fix bug in gym autopopulate + add new autopopulate in junk store for 360 items
  * - v0.2: Add feature to autopopulate gym input fields
  * - v0.1: Initial release
 */
@@ -47,6 +51,9 @@
         }
         .green {
             color: #00cc66;
+        }
+        .red {
+            color: #ff6666;
         }
         .gray {
             color: #888;
@@ -227,6 +234,11 @@
                 set(`xpUntilNextRank`, parseInt(data.xp_end-data.experience));
             }
 
+            else if (url.endsWith("/getRadioTower")) {
+                const data = JSON.parse(this.responseText);
+                saveCurrentTradeValues(data);
+            }
+
         });
         originalXHR.apply(this, args);
     };
@@ -301,6 +313,16 @@
                 else if (page.includes("stronghold/2375017")) {
                     module = "furnace";
                     log("Navigated to Furnace");
+                }
+                else if (page.includes("stronghold/2375019")) {
+                    module = "radio";
+                    log("Navigated to Radio Tower");
+                    showTradeValues();
+                }
+                else if (page.includes("/store/junk")) {
+                    module = "store";
+                    log("Setting up auto input for junk store - 360 items");
+                    autoPopulate360Items();
                 }
                 else {
                     module = "unknown";
@@ -418,11 +440,15 @@
         if (energy > 5) {
             const trainsAvailable = Math.floor(energy/5);
             log(`Current energy: ${energy} - Autopopulating ${trainsAvailable} into the input fields`);
+
             waitForElement("input.q-field__native").then(() => {
+                
                 const inputs = document.querySelectorAll("input.q-field__native");
                 for (let input of inputs) {
                     input.value = trainsAvailable;
+                    input.dispatchEvent(new Event("input", { bubbles: true }));
                 }
+
             });
         } else {
             log("Current energy is 5 or lower, don't autopopulate input fields");
@@ -430,6 +456,82 @@
     }
                     
 
+
+
+
+    /** Radio Tower functions */
+    function showTradeValues() {
+        log("Coming...");
+        try {
+            const trades = JSON.parse(get(`tradeValues`));
+            // [{"give":96,"return":460},{"give":1425,"return":11900},{"give":3000,"return":2380}]
+            log("Current trades to show:");
+            log(trades);
+
+            waitForElement(".q-pa-md").then(() => {
+                const tradeContainers = document.querySelectorAll(".q-pa-md");
+                let i = 0;
+                for (let tradeContainer of tradeContainers) {
+                    console.log(tradeContainer);
+                    const valueEl = document.createElement('div');
+                    valueEl.classList.add('trade-value');
+                    valueEl.innerHTML = `
+                    <div style="float:left;">
+                        <span class="red">$</span> ${formatNumber(trades[i].give)}
+                    </div>
+                    <div style="float:right;">
+                        <span class="green">$</span> ${formatNumber(trades[i].return)}
+                    </div>
+                    <div style="clear:both;"></div>`;
+                    tradeContainer.appendChild(valueEl);
+                    i++;
+                }
+            });
+        } catch(error) {
+            log("No trade values found");
+        }
+    }
+
+    function saveCurrentTradeValues(data) {
+        try {
+            const trades = [];
+            for (let trade of data.items) {
+                // trade -> vars -> items -> <item_requirement_1> -> codename/req_qty
+                // trade -> vars -> output -> <item_list-1> -> codename/quantity
+                let worthGive = 0;
+                let worthReturn = 0;
+                const items = trade.vars.items;
+                Object.keys(items).forEach( (key,val) => {
+                    const marketValue = JSON.parse(get(`mv_${items[key].codename}`)).marketValue;
+                    worthGive += (marketValue*items[key].req_qty);
+                });
+                const output = trade.vars.output;
+                Object.keys(output).forEach( (key,val) => {
+                    const marketValue = JSON.parse(get(`mv_${output[key].codename}`)).marketValue;
+                    worthReturn += (marketValue*output[key].quantity);
+                });
+                log(`Trade: ${trade.name} - Give: ${worthGive} - Return: ${worthReturn}`);
+                trades.push({ "give": worthGive, "return": worthReturn });
+            }
+            set(`tradeValues`, JSON.stringify(trades));
+        } catch(error) {
+            log("Error saving trade values");
+            set(`tradeValues`, null);
+        }
+    }
+
+
+
+    /** Store functions */
+
+    function autoPopulate360Items() {
+        const selector = "input[type=number].q-placeholder";
+        waitForElement(selector).then(() => {
+            const el = document.querySelector(selector);
+            el.value = 360;
+            el.dispatchEvent(new Event("input", { bubbles: true }));
+        });
+    }
 
 
 
