@@ -1,8 +1,9 @@
 // ==UserScript==
 // @name         ZedHelper
 // @description  Misc helper tools for Zed City
-// @version      0.4.0
+// @version      0.4.1
 // @namespace    kvassh.zedhelper
+// @license      MIT
 // @icon         data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAIAAAD8GO2jAAAEZklEQVR4nLzW+1OUVRgH8EU2hQUDBTQFlwW5I+iwctFA1yUICQQyvERgiyOiNjYgTkQTbjIYSBRgJihGjgbKSkSkkCiIlCwMAZJRmCsSko4jt8CF5FLfb/+DLz98zszLu7vnec5znnPEJhOWIpGo+UYAtGoagNPKx9DM/yL0Oq+HJV35MM0IiMIWvQeP3jKAVWfq4bIEPzjnMs24+BS6bq+B1cpWPhc95z8DneYZBs/ccuju+wMc9rsGeytWw0y1M+zWMcrfNJtgvOQ4/M49DYobU2Ds4DRM9jOGC6//CW2+8YUPzscLEYE4YqAZw7njzPKazkl4t/xbWFD0NezMyIK1xamM5nolvCYP4TsPlsJB1RM4kfMyHNjJT+W2cy2jnBUwJ3qpIBFkDw9jSJzLrO05YQv96k5BreYcDLditfjdaoH1ZZ4wpORHuCSUuVZZbocSMdcp3ygC6j+ugFd143DryGeCRCC7+hpnIc+EG+fcgyUNm2FL3gn4tyWzH6yTwnu1TnA01h5GGnElAk8/hKvyN8IXwzzgwxv8707tPOhhOiFIBMaHPsWwJYL5dclj7XdFh/FJXhXsKZNDK2k1fLvvMuxo2QvTHWo5dzsFlO2og6rCGX7WnXXlGrUWVqXYCxLBwbJGDOaOrA3JGH+zZ/Z7+MyeezVEwvhWqx1gZjTXqee0IXyy/BKclh2Et1UyqL+0CM5XeMF3zFXQq7ZYkAjy5G9gKNithf9M8VGA1BVKh1nLvW7/zzeEPcox2AbGlVrDxRdYPzaPXoKtH7TDAVtzmBDD2jd2pOrJfEEi6F7MOX5UwzVYYRLKGd2UQHMds5wk4R4+6bEAJhv0wv6MfdC/uogRyxXwX/+3YGpnHOw4wkxEWbPj6nLiBIlgooO/duzRH1Dmkw6X636C8xq4hysnz8DQKxug8/hRvmN2n88tVkKb/dzPFUnsP7WSQnjAm3G7GL4CFyR9IkQEBjGGhzAoSlnjv+5ZCMeXvAA3bXOE0jjuEmksT9qgdO6M8fBEeHaVDC7TB0Pfp/yGDZVcp5G2L2FWF0/Jv7wrhIhAvPcue3p4lDcMtGXlrnv3TbjfIZmz8D0M3T5njft8xZl+6M8u9NjiVdhnOgbLNP3QNIuxZivZg0cv8B0X3zZBIpBZ52GYthuEhdEHYK4ne6E8whQmGPN529DvsCtmFI64sfvPN9LAO5G8QWnq1PCX9awo07W8HfXe543IVvq+EBEYqBpmMaRpueuSfo6EJ2uYcbNuVkW98jacdS6A6+fehCnx7EU7tLwDbvFhL5pq5E0iKJd59zrFNWtpd4fZrW5CRCAW2zLvgSrOtymVPTKgbwju22wHM4t4xk1plbBfydvfF+m87YyJ+KbdYQvYupVVtGIXu/+M/g50Kt4Nt8l7BIlgnZo3u8Bw9nSnUmYwUc2eY3yWdyR3hQtnZ8J6dzzCXF8J4j1u1xqeFplNPL+Gmnl36iopg+Uz7MfHVjLW14cEOZP/CwAA//8SBG+b+O/5hQAAAABJRU5ErkJggg==
 // @updateURL    https://raw.githubusercontent.com/kek91/userscripts/refs/heads/main/ZedCity/ZedHelper.js
 // @downloadURL  https://raw.githubusercontent.com/kek91/userscripts/refs/heads/main/ZedCity/ZedHelper.js
@@ -31,10 +32,14 @@
  * If you have any questions, feel free to reach out to Kvassh [12853] in Zed City
  * 
  * Changelog:
- * - v0.4: Add value of trades at Radio Tower
- * - v0.3: Fix bug in gym autopopulate + add new autopopulate in junk store for 360 items
- * - v0.2: Add feature to autopopulate gym input fields
- * - v0.1: Initial release
+ * - 0.4.1: Show warning if market values has not been cached yet. 
+ *          Show warning on Radio Tower if the cached data is old.
+ *          Indicate if the trade is good or bad with checkmark on Radio Tower
+ *          Fixed bug on inventory page where it would potentially not update prices if changing to next page in inventorylist
+ * - 0.4: Add value of trades at Radio Tower
+ * - 0.3: Fix bug in gym autopopulate + add new autopopulate in junk store for 360 items
+ * - 0.2: Add feature to autopopulate gym input fields
+ * - 0.1: Initial release
 */
 
 (function() {
@@ -47,7 +52,7 @@
             float:right;
             position:absolute;
             top:18px;
-            right:150px;
+            right:120px;
         }
         .green {
             color: #00cc66;
@@ -63,6 +68,15 @@
             margin: 10px auto;
             color: #ccc;
             font-size: 1.6rem;
+        }
+        .zedhelper-inventory-warning {
+            text-align: center;
+            margin: 10px auto;
+            color: #ccc;
+            font-size: 0.8rem;
+        }
+        .radio-warning {
+            text-align: center;
         }
     `);
 
@@ -119,7 +133,7 @@
     }
 
     function getCodename(itemName) {
-        let codename = itemName.toString().toLowerCase().replace(' ', '_').trim();
+        let codename = itemName.toString().toLowerCase().replace(' ', '_').trim().split(/\n/)[0];
 
         let nametable = {
             "arrows": "ammo_arrows",
@@ -200,6 +214,7 @@
                     set(`mv_${codename}`, JSON.stringify({ "name": item["name"], "marketValue": item["market_price"], "tz": Date.now() }));
                     itemsCached++;
                 }
+                set(`mv_lastupdate`, Date.now());
                 log(`Cached market value for ${itemsCached} items.`);
             }
 
@@ -237,6 +252,7 @@
             else if (url.endsWith("/getRadioTower")) {
                 const data = JSON.parse(this.responseText);
                 saveCurrentTradeValues(data);
+                set(`radio_lastupdate`, Date.now());
             }
 
         });
@@ -461,8 +477,24 @@
 
     /** Radio Tower functions */
     function showTradeValues() {
-        log("Coming...");
         try {
+
+            const timeDiff = get("radio_lastupdate") ? (Date.now() - get("radio_lastupdate"))/1000 : 0;
+            log(`Trade values last updated: ${timeDiff} sec ago`);
+            if (timeDiff > 60*60*12) {
+                log("Trade values are old. Please visit the Radio Tower to cache new values.");
+
+                const el = document.createElement('div');
+                el.classList.add('radio-warning');
+                waitForElement("div.overlay-cont").then(() => {
+                    const container = document.querySelector("div.overlay-cont");
+                    // document.querySelector("#q-app > div > div.q-page-container > main > div > div:nth-child(11) > div.overlay-cont > div > div > div > div > div.text-center.text-no-bg-light.subtext-large.q-my-md")
+                    el.innerHTML = `Radio trades data are old - please refresh <a href="stronghold/2375019">Radio Tower</a> to cache new values.`;
+                    container.prepend(el);
+                });
+                return;
+            }
+
             const trades = JSON.parse(get(`tradeValues`));
             // [{"give":96,"return":460},{"give":1425,"return":11900},{"give":3000,"return":2380}]
             log("Current trades to show:");
@@ -472,17 +504,19 @@
                 const tradeContainers = document.querySelectorAll(".q-pa-md");
                 let i = 0;
                 for (let tradeContainer of tradeContainers) {
-                    console.log(tradeContainer);
                     const valueEl = document.createElement('div');
                     valueEl.classList.add('trade-value');
                     valueEl.innerHTML = `
                     <div style="float:left;">
-                        <span class="red">$</span> ${formatNumber(trades[i].give)}
+                        ${trades[i].giveqty} items worth<br><span class="red">$</span> ${formatNumber(trades[i].give)}
                     </div>
                     <div style="float:right;">
-                        <span class="green">$</span> ${formatNumber(trades[i].return)}
+                        ${trades[i].returnqty} items worth<br><span class="green">$</span> ${formatNumber(trades[i].return)}
                     </div>
-                    <div style="clear:both;"></div>`;
+                    <div style="clear:both;font-size:1.2rem;">
+                        ${parseInt(trades[i].return) > parseInt(trades[i].give) ? '<span class="green">&check;</span>' : '<span class="red">&cross;</span>'}
+                    </div>
+                    `;
                     tradeContainer.appendChild(valueEl);
                     i++;
                 }
@@ -500,18 +534,22 @@
                 // trade -> vars -> output -> <item_list-1> -> codename/quantity
                 let worthGive = 0;
                 let worthReturn = 0;
+                let qtyGive = 0;
+                let qtyReturn = 0;
                 const items = trade.vars.items;
                 Object.keys(items).forEach( (key,val) => {
                     const marketValue = JSON.parse(get(`mv_${items[key].codename}`)).marketValue;
                     worthGive += (marketValue*items[key].req_qty);
+                    qtyGive += items[key].req_qty;
                 });
                 const output = trade.vars.output;
                 Object.keys(output).forEach( (key,val) => {
                     const marketValue = JSON.parse(get(`mv_${output[key].codename}`)).marketValue;
                     worthReturn += (marketValue*output[key].quantity);
+                    qtyReturn += output[key].quantity;
                 });
                 log(`Trade: ${trade.name} - Give: ${worthGive} - Return: ${worthReturn}`);
-                trades.push({ "give": worthGive, "return": worthReturn });
+                trades.push({ "give": worthGive, "return": worthReturn, "giveqty": qtyGive, "returnqty": qtyReturn });
             }
             set(`tradeValues`, JSON.stringify(trades));
         } catch(error) {
@@ -579,6 +617,29 @@
           return;
         }
 
+        const mvLastUpdateEl = document.createElement('div');
+        mvLastUpdateEl.classList.add('zedhelper-inventory-warning');
+        const mvLastUpdated = get('mv_lastupdate');
+        if (mvLastUpdated) {
+            const timeDiff = (Date.now() - mvLastUpdated)/1000;
+            log(`Market values last updated: ${timeDiff} sec ago`);
+            if (timeDiff > 60*60*24) {
+                log("Market values are older than 24 hours. Please visit the market page to cache new values.");
+                mvLastUpdateEl.innerHTML = `Market values are older than a day - please visit the <a href="market">Market</a> page to cache new values.`;
+            }
+        }
+        else {
+            log("Market values not cached. Please visit the market page to cache values.");
+            mvLastUpdateEl.innerHTML = `
+            Market value has not been cached yet.<br>
+            Please visit the <a href="market">Market</a> page first to calculate worth on your inventory.
+            `;
+        }
+        const selector = "#q-app > div > div.q-page-container > main > div > div:nth-child(2)";
+        waitForElement(selector).then(() => {
+            document.querySelector(selector).prepend(mvLastUpdateEl);
+        });
+
         // Delete any existing market value elements
         const existingMarketValues = document.querySelectorAll('.market-price');
         for (let mvEl of existingMarketValues) {
@@ -625,6 +686,13 @@
         }
 
         // Setup interval to check if inventory list changes
+        let firstItemRowCodename = "";
+        try {
+            firstItemRowCodename = getCodename(items[0].querySelector('.q-item__label').innerText);
+        } catch (error) {
+            // eat exception
+        }
+
         checkForInventoryUpdates = setInterval(() => {
             let newItems = document.querySelectorAll('.item-row');
             if (newItems.length !== items.length) {
@@ -632,6 +700,20 @@
                 clearInterval(checkForInventoryUpdates);
                 checkForInventoryUpdates = null;
                 addMarketPrices();
+                return;
+            }
+            let newFirstItemRowCodename = ""; 
+            try {
+                newFirstItemRowCodename = getCodename(newItems[0].querySelector('.q-item__label').innerText);
+            } catch (error) {
+                // eat exception
+            }
+            if (firstItemRowCodename != newFirstItemRowCodename) {
+                log("Inventory list has changed. Updating prices...");
+                clearInterval(checkForInventoryUpdates);
+                checkForInventoryUpdates = null;
+                addMarketPrices();
+                return;
             }
         },250);
     }
